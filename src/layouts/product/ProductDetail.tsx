@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ProductImages } from "./components/ProductImages";
-import "../css/ProductDetail.css"
+import styles from '../css/ProductDetail.module.css'
 import { Product } from "../../models/Product";
 import { useParams } from "react-router-dom";
 import { getProductDetail } from "../../api/ProductApi";

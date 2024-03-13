@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export function Header(){
     return(
@@ -30,7 +31,7 @@ export function Header(){
                       </a>
                   </li>
                   <li className="nav-item">
-                      <a className="nav-link" href="#" style={{color:'white'}}>Đăng nhập</a>
+                      <Link className="nav-link" to="/login" style={{color:'white'}}>Đăng nhập</Link>
                   </li>
               </ul>
           </div>

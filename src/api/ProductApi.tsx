@@ -33,7 +33,34 @@ async function getProduct(url : string):Promise<Result> {
   
 }
 
-export function getAllProduct(currentPage:number):Promise<Result>{
-    const url:string = `http://localhost:8080/api/v1/products?page=${currentPage}&limit=12`;
+export function getAllProduct(currentPage:number,categoryId:number,keyword:string):Promise<Result>{
+
+    const url:string = `http://localhost:8080/api/v1/products?page=${currentPage}&limit=12&category_id=${categoryId}&keyword=${keyword}`;
     return getProduct(url);
+}
+
+export async function getProductDetail(productId:number):Promise<Product | null>{
+    const url:string = `http://localhost:8080/api/v1/products/${productId}`;
+    try{
+        const response = await Request(url);
+        if(response){
+            return{
+                id: response.id,
+                name: response.name,
+                price: response.price,
+                thumbnail: response.thumbnail,
+                des: response.des,
+                category_id: response.category_id,
+                product_images: response.product_images,
+
+            }
+        }
+        else{
+            throw new Error("product not exist")
+        }
+    }
+    catch(error){
+        console.error('Error',error);
+        return null;
+    }
 }

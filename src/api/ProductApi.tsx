@@ -64,3 +64,22 @@ export async function getProductDetail(productId:number):Promise<Product | null>
         return null;
     }
 }
+
+export async function getProductByIds(productIds:number[]):Promise<Product[]>{
+    // Chuyển mảng productIds thành chuỗi, phân cách bằng dấu ","
+    const idsString: string = productIds.join(',');
+
+    const url:string = `http://localhost:8080/api/v1/products/by-ids?ids=${idsString}`;
+
+    try{
+        const response = await Request(url);
+
+        const result:Product[] = await response;
+    
+        return result;
+    }
+    catch(error){
+        console.error('Error fetching products:', error);
+        throw error;
+    }
+}

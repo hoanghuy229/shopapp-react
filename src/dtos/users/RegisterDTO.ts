@@ -5,7 +5,7 @@ export class RegisterDTO {
   address:string;
   password:string;
   re_password:string;
-  date_of_birth:Date;
+  date_of_birth:Date | null;
   facebook_account_id:number=0;
   google_account_id:number=0;
   role_id:number=2;
@@ -16,7 +16,7 @@ export class RegisterDTO {
     address:string,
     password:string,
     re_password:string,
-    date_of_birth:Date,
+    date_of_birth:Date | null, 
     facebook_account_id:number,
     google_account_id:number,
     role_id:number
@@ -29,7 +29,7 @@ export class RegisterDTO {
     this.date_of_birth = date_of_birth;
     this.facebook_account_id = facebook_account_id || 0;
     this.google_account_id = google_account_id || 0;
-    this.role_id = 2;
+    this.role_id = role_id || 2;
 
   }
 }

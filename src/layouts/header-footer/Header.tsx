@@ -19,16 +19,16 @@ export function Header(){
           <div className="collapse navbar-collapse" id="navbarNav">
               <ul className="navbar-nav">
                   <li className="nav-item">
-                      <a className="nav-link active" href="#" style={{color:'white'}}>Trang chủ</a>
+                      <Link className="nav-link active" to="/" style={{color:'white'}}>Trang chủ</Link>
                   </li>
                   <li className="nav-item">
                       <a className="nav-link" href="#" style={{color:'white'}}>Thông báo</a>
                   </li>
                   <li className="nav-item">
-                      <a className="nav-link" href="#" style={{color:'white'}}>
+                      <Link className="nav-link" to="/cart" style={{color:'white'}}>
                           <i className="fas fa-shopping-cart icon"></i>
                           Giỏ hàng
-                      </a>
+                      </Link>
                   </li>
                   <li className="nav-item">
                       <Link className="nav-link" to="/login" style={{color:'white'}}>Đăng nhập</Link>

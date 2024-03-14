@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Login } from './layouts/user/Login';
 import { Register } from './layouts/user/Register';
 import { AuthLayout } from './layouts/authLayout/AuthLayout';
+import { Cart } from './layouts/home/components/Cart';
 function App() {
   return (
     <div className="App">
@@ -17,6 +18,7 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route path='/' element={<HomePage></HomePage>}></Route>
           <Route path='/product/:productId' element={<ProductDetail></ProductDetail>}></Route>
+          <Route path='/cart' element={<Cart></Cart>}></Route>
         </Route>
 
           {/* without header */}

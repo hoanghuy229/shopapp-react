@@ -1,12 +1,18 @@
 import { Product } from "../../../models/Product";
 import { Link } from "react-router-dom";
+import CartService from "../../../services/CookieService";
 interface ProductProp{
     product:Product
 }
 
 
 export const ProductProp: React.FC<ProductProp> = (props) => {
+    const cartService= CartService();
 
+
+    const addProductToCart = (id:number) => {
+        cartService.addToCart(id,1);
+    }
 
     return (
         <div className="col-md-3 mt-2">
@@ -41,7 +47,7 @@ export const ProductProp: React.FC<ProductProp> = (props) => {
                             </button>
                         </div>
                         <div className="col-6">
-                            <button className="btn btn-danger btn-block" style={{marginLeft:"70%"}}>
+                            <button className="btn btn-danger btn-block" style={{marginLeft:"70%"}} onClick={() =>addProductToCart(props.product.id)}>
                                 <i className="fas fa-shopping-cart"></i>
                             </button>
                         </div>

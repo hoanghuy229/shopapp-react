@@ -24,10 +24,18 @@ const CartService = () => {
         setCookie('cart', updatedCart, { path: '/', maxAge: 86400 });
     };
 
+    //cập nhật số lượng từng sản phẩm
+    const updateQuantity = (productId:number,newQuantity:number) => {
+        const updateQuantity = {...cart };
+        updateQuantity[productId] = newQuantity
+        setCookie('cart',updateQuantity, { path: '/',maxAge: 86400});
+    }
+
     return {
         addToCart,
         getCart,
-        removeFromCart
+        removeFromCart,
+        updateQuantity
     };
 };
 

@@ -3,12 +3,14 @@ import { useCookies } from "react-cookie";
 import { getProductByIds } from "../../../api/ProductApi";
 import { Product } from "../../../models/Product";
 import CartService from "../../../services/CookieService";
+import { useNavigate } from "react-router-dom";
 export const Cart = () => {
 
     const [cookies] = useCookies(['cart']);
     let [products, setProducts] = useState<Product[]>([]);
-    const [quantities, setQuantities] = useState<{[key: number]: number}>({}); 
+    const [quantities, setQuantities] = useState<{[key: number]: number}>({}); //key value
 
+    const navigate = useNavigate();
     const cartService = CartService();
 
     useEffect(() => {
@@ -59,6 +61,30 @@ export const Cart = () => {
         
     }
 
+    const increaseQuantity = (productid:number) => {
+        const updateQuantity = quantities[productid] + 1;
+        const updateQuantites = {...quantities,[productid]:updateQuantity}; // [productid] là key và updateQuantity là value
+        setQuantities(updateQuantites);
+        cartService.updateQuantity(productid, updateQuantity);
+    }
+
+    const decreaseQuantity = (productid:number) => {
+
+        if (quantities[productid] === 1) return;
+
+        const updateQuantity = quantities[productid] - 1;
+        const updateQuantites = { ...quantities, [productid]: updateQuantity };
+        setQuantities(updateQuantites);
+        cartService.updateQuantity(productid, updateQuantity);
+    
+    }
+
+    const moveToOrderConfirm = () => {
+        if(products.length === 0) return;
+
+        navigate("/orderConfirm");
+    }
+    
     return (
         <div className="container">
             <div className="confirmation-container" style={confirmationContainerStyle}>
@@ -88,13 +114,13 @@ export const Cart = () => {
                     </td>
                     <td>
                         <div className="d-flex" style={{marginRight:"10px"}}>
-                            <button className="btn btn-link px-1"><i className="fas fa-minus"></i></button>
-                            <input id="form1" min="0" name="quantity"  defaultValue={quantities[product.id]} type="text" className="form-control form-control-sm text-center" style={{ width: '80px' }} readOnly />
-                            <button className="btn btn-link px-1"><i className="fas fa-plus"></i></button>
+                            <button className="btn btn-link px-1"onClick={() => decreaseQuantity(product.id)}><i className="fas fa-minus"></i></button>
+                            <input id="form1" min="0" name="quantity"  value={quantities[product.id]} type="text" className="form-control form-control-sm text-center" style={{ width: '80px' }} readOnly />
+                            <button className="btn btn-link px-1" onClick={() => increaseQuantity(product.id)}><i className="fas fa-plus"></i></button>
                         </div>
                     </td>
-                    <td>{product.price} $</td>
-                    <td>{product.price && product.price * quantities[product.id]} $</td>
+                    <td>{(product.price && product.price.toFixed(1))} $</td>
+                    <td>{(product.price && (product.price * quantities[product.id]).toFixed(1)) || 0} $</td>
                     <td>
                         <button className="btn btn-danger" onClick={(e) => removeItem(product.id)}>Xóa</button>
                     </td>
@@ -113,9 +139,9 @@ export const Cart = () => {
                 </div>
             </div>
 
-            <p className="mb-0">Tổng tiền: <span>{getTotalPrice()} đ</span></p>
+            <p className="mb-0">Tổng tiền: <span>{getTotalPrice().toFixed(1)} $</span></p>
             <div className="text-center mt-3">
-                <button className="btn btn-outline-primary" type="button">Đặt hàng</button>
+                <button className="btn btn-outline-primary" type="button" onClick={moveToOrderConfirm}>Đặt hàng</button>
             </div>
         </div>
     );

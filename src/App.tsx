@@ -8,6 +8,7 @@ import { Login } from './layouts/user/Login';
 import { Register } from './layouts/user/Register';
 import { AuthLayout } from './layouts/authLayout/AuthLayout';
 import { Cart } from './layouts/home/components/Cart';
+import { OrderConfirm } from './layouts/home/components/OrderConfirm';
 function App() {
   return (
     <div className="App">
@@ -19,6 +20,7 @@ function App() {
           <Route path='/' element={<HomePage></HomePage>}></Route>
           <Route path='/product/:productId' element={<ProductDetail></ProductDetail>}></Route>
           <Route path='/cart' element={<Cart></Cart>}></Route>
+          <Route path='/orderConfirm' element={<OrderConfirm></OrderConfirm>}></Route>
         </Route>
 
           {/* without header */}

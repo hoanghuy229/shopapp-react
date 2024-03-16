@@ -5,12 +5,12 @@ import { Product } from "../../models/Product";
 import { useParams } from "react-router-dom";
 import { getProductDetail } from "../../api/ProductApi";
 import CartService from "../../services/CookieService";
-
+import { useNavigate } from "react-router-dom";
 
 export const ProductDetail = () => {
     const cartService = CartService();
     const { productId } = useParams();
-
+    const navigate = useNavigate();
 
     let productIdNumber = 0;
 
@@ -67,6 +67,16 @@ export const ProductDetail = () => {
           }
     }
 
+    const buyNow = () => {
+        if(productDetail){
+            cartService.addToCart(productDetail.id,quantity);
+            navigate("/orderConfirm");
+        }
+        else {
+            console.error('Không thể thêm sản phẩm vào giỏ hàng vì product là null.');
+          }
+    }
+
     return (
         <div className="container">
             <div className="intro-section">
@@ -92,7 +102,7 @@ export const ProductDetail = () => {
                                 <input type="text" className="form-control text-center" value={quantity} />
                                 <button className="btn btn-outline-secondary" type="button" onClick={increase}>+</button>
                             </div>
-                            <button className="btn btn-outline-danger d-block w-100 mt-4 mb-2">Mua ngay</button>
+                            <button className="btn btn-outline-danger d-block w-100 mt-4 mb-2" onClick={buyNow}>Mua ngay</button>
                             <button className="btn btn-outline-primary d-block w-100 mt-3 mb-2" onClick={addProductToCart}>Thêm vào giỏ</button>
                         </div>
                     </div>

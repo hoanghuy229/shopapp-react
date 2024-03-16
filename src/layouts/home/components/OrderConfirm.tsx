@@ -2,15 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { Product } from "../../../models/Product";
 import { getProductByIds } from "../../../api/ProductApi";
+import { OrderDTO } from "../../../dtos/orders/OrderDTO";
+import { placeOrder } from "../../../api/OrderApi";
+import { useNavigate } from "react-router-dom";
 
 export const OrderConfirm = () => {
 
+    const navigate = useNavigate();
     const [cookies] = useCookies(['cart']);
     const [products,setProducts] = useState<Product[]>([]);
     const [quantites,setQuantites] = useState<{[key:number]:number}>({}); //key value
     
     const [checkPhoneNumber,setCheckPhoneNumber] = useState("");
     const [checkEmail,setCheckEmail] = useState("");
+    const [error,setError] = useState("");
 
 
     const [phoneNumber,setPhoneNumber] = useState("");
@@ -22,6 +27,7 @@ export const OrderConfirm = () => {
     const [paymentMethod,setPaymentMethod] = useState("");
     const [totalPrice,setTotalPrice] = useState(0);
 
+    
 
     useEffect(() => {
         const productIds:number[] = Object.keys(cookies.cart || {}).map(Number);
@@ -51,7 +57,6 @@ export const OrderConfirm = () => {
         products.forEach((product) => {
             totalPrice += (product.price && product.price *  quantites[product.id]) || 0;
         });
-        setTotalPrice(totalPrice);
         return totalPrice;
     };
 
@@ -91,14 +96,60 @@ export const OrderConfirm = () => {
 
     }
 
-    const handleSubmit = () => {
+    const backToCart = () => {
+        navigate("/cart");
+    }
 
+    const handleSubmit = async (e:React.FormEvent) => {
+        e.preventDefault();
+
+        if(!validateUserEmail(email)){
+            setError("invalid information");
+            return;
+        }
+        if(!validatePhoneNumber(phoneNumber)){
+            setError("invalid information");
+            return
+        }
+
+        const productIds:number[] = Object.keys(cookies.cart || {}).map(Number);
+
+        const cartItems = productIds.map((productId) =>({
+            product_id : productId,
+            quantity : quantites[productId]
+        }))
+
+        const totalPrice = getTotalPrice();
+
+        const orderDTO:OrderDTO = {
+            user_id: 5,
+            fullname: fullname,
+            email: email,
+            phone_number: phoneNumber,
+            address: address,
+            note: note,
+            total_price: totalPrice,
+            shipping_method: shippingMethod,
+            payment_method: paymentMethod,
+            cart_items: cartItems
+        }
+
+        const response = await placeOrder(orderDTO);
+        if(response.includes("create order success")){
+            setError("create order success");
+        }
+        else{
+            setError(response);
+        }
     }
 
     return (
         <div className="container">
     <div className="intro-section">
         <h1 style={{textAlign:"center",margin:"30px"}}>Order Confirm</h1>
+        {
+            error && (<p style={{color:'red'}}>{error}</p>)
+        }
     </div>
     <form onSubmit={handleSubmit}>
     <div className="row">
@@ -147,51 +198,50 @@ export const OrderConfirm = () => {
                 </div>
         </div>
         <div className="col-md-6">
-            <h2 className="product-order mb-3" style={{textAlign:"center"}}>Sản phẩm đã đặt hàng</h2>
-            <table style={{width:"100%",borderRadius:"10px",border:"1px solid white",borderCollapse:"separate",borderSpacing:"0"}}>
-            <thead >
+    <h2 className="product-order mb-3" style={{textAlign: "center"}}>Sản phẩm đã đặt hàng</h2>
+    <div style={{border: "2px solid black", borderRadius: "10px", padding: "10px"}}>
+        <table style={{width: "100%"}}>
+            <thead>
                 <tr>
-                    <th style={{textAlign:"center"}} scope="col" >Sản phẩm</th>
-                    <th style={{textAlign:"center"}} scope="col">Số lượng</th>
-                    <th style={{textAlign:"center"}} scope="col">Đơn giá</th>
-                    <th style={{textAlign:"center"}} scope="col">Tổng giá</th>
+                    <th style={{textAlign: "center"}}>Sản phẩm</th>
+                    <th style={{textAlign: "center"}}>Số lượng</th>
+                    <th style={{textAlign: "center"}}>Đơn giá</th>
+                    <th style={{textAlign: "center"}}>Tổng giá</th>
                 </tr>
             </thead>
-            <tbody >
-                {
-                    products && products.map((product) =>(
-                        <tr >
-                            <td style={{textAlign:"center"}}>
-                                <div className="product-info">
-                                    <img src={product.thumbnail} className="product-image" style={{maxWidth:"150px",maxHeight:"150px",borderRadius:"5px"}}/>
-                                    <span className="product-name"></span>
-                                </div>
-                            </td>
-                            <td style={{textAlign:"center",fontWeight:"bold"}}>{quantites[product.id]}</td>
-                            <td style={{textAlign:"center",fontWeight:"bold"}}>{product.price}$</td>
-                            <td style={{textAlign:"center",fontWeight:"bold"}}>{product.price && product.price * quantites[product.id]}$</td>
-
-                        </tr>
-                    ))
-                }
-                    
+            <tbody>
+                {products && products.map((product) => (
+                    <tr key={product.id} >
+                        <td style={{textAlign: "center"}}>
+                            <div className="product-info">
+                                <img src={product.thumbnail} className="product-image" style={{width: "100px", height: "100px", borderRadius: "5px"}} alt="product"/>
+                                <span className="product-name"></span>
+                            </div>
+                        </td>
+                        <td style={{textAlign: "center", fontWeight: "bold"}}>{quantites[product.id]}</td>
+                        <td style={{textAlign: "center", fontWeight: "bold"}}>{(product.price)?.toFixed(1)}$</td>
+                        <td style={{textAlign: "center", fontWeight: "bold"}}>{(product.price && product.price * quantites[product.id])?.toFixed(1)}$</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
-            <div className="text-start mt-3">
-                <h4 className="header-text text-end ">Tổng giá: <span>{getTotalPrice().toFixed(1)} $</span></h4>
-            </div>
-            <div className="mt-3">
-                <h4 className="product-header">Nhập coupon</h4>
-                <div className="input-group">
-                    <input type="text" className="form-control" placeholder="Nhập coupon"/>
-                    <button className="btn btn-gradient" type="button">Áp dụng</button>
-                </div>
-            </div>
-            <div className=" mt-5 d-flex justify-content-center align-items-center">
-                <button
-                    className="btn btn-outline-success" type="submit" style={{width:"200px",height:"70px",fontSize:"30px"}}>Đặt hàng</button>
-            </div>
+        <div className="text-start mt-3">
+            <h4 className="header-text text-end">Tổng giá: <span>{getTotalPrice().toFixed(1)} $</span></h4>
         </div>
+    </div>
+    <div className="mt-3">
+        <h4 className="product-header">Nhập coupon</h4>
+        <div className="input-group">
+            <input type="text" className="form-control" placeholder="Nhập coupon"/>
+            <button className="btn btn-gradient" type="button">Áp dụng</button>
+        </div>
+    </div>
+    <div className="mt-5 d-flex justify-content-center align-items-center">
+        <button className="btn btn-outline-warning" type="button" onClick={backToCart} style={{width: "190px", height: "50px", fontSize: "20px",marginRight:"100px"}}>Quay lại giỏ hàng</button>
+        <button className="btn btn-outline-success" type="submit" style={{width: "150px", height: "50px", fontSize: "20px"}}>Đặt hàng</button>
+    </div>
+</div>
+
     </div>
 </form>
 </div>

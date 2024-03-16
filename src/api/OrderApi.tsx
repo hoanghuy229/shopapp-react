@@ -1,15 +1,31 @@
 import { OrderDTO } from "../dtos/orders/OrderDTO";
 
-export async function placeOrder(orderDTO:OrderDTO):Promise<any> {
-    const url:string = `http://localhost:8080/api/v1/orders`;
+// Phương thức để lấy token từ Local Storage
+const getTokenFromLocalStorage = (): string | null => {
+    return localStorage.getItem('token');
+}
 
-    try{
-        
-    const response = await fetch(url,
-        {
-            method:"POST",
-            headers:{'Content-Type': 'application/json'},
-            body:JSON.stringify({
+// Phương thức đặt hàng
+export async function placeOrder(orderDTO: OrderDTO): Promise<string> {
+    const url: string = `http://localhost:8080/api/v1/orders`;
+
+    try {
+
+        // Lấy token từ Local Storage
+        const token = getTokenFromLocalStorage();
+
+        //nếu không có báo lỗi
+        if (!token) {
+            throw new Error('Token not found in Local Storage');
+        }
+
+        const response = await fetch(url,{
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: orderDTO.user_id,
                 fullname: orderDTO.fullname,
                 email: orderDTO.email,
@@ -23,14 +39,13 @@ export async function placeOrder(orderDTO:OrderDTO):Promise<any> {
             })
         });
 
-        if(!response.ok){
-            throw new Error(`cannot access ${url}`);
+        if (!response.ok) {
+            throw new Error(`Cannot access ${url}`);
         }
 
-        return response.json();
-    }
-    catch(error){
+        return "create order success";
+    } catch (error) {
         console.log(error);
-        return `error : ${error}`;
+        return `${error}`;
     }
 }

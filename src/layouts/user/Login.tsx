@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { login } from "../../api/UserApi";
+import { getUserDetail, login } from "../../api/UserApi";
 import { LoginDTO } from "../../dtos/users/LoginDTO";
-
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
     const [phoneNumber,setPhoneNumber] = useState("");
     const [password,setPassword] = useState("");
     const [rememberme,setRememberme] = useState(false);
     const [error,setError] = useState("");
+    const navigate = useNavigate();
 
     const handleRememberMeChange = () => {
         setRememberme(!rememberme);
     }
 
     const handleLogin = async () => {
+        debugger
         const loginDTO:LoginDTO = {
             phone_number:phoneNumber,
             password:password,
@@ -28,8 +30,14 @@ export const Login = () => {
                 if (rememberme) {
                     const token = response;
                     localStorage.setItem("token", token); // Lưu token vào localStorage
+
+                    //lấy thông tin user lưu vào localstorage
+                    getUserDetail(token).then((userResponse) => {
+                        localStorage.setItem("user", JSON.stringify(userResponse));
+                        window.location.reload(); // Reload trang để cập nhật UI
+                    });
                 }
-                setError("Login success!!!");
+                navigate("/");
             }
         } catch (error) {
             setError("Invalid username or password!");

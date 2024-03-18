@@ -1,0 +1,52 @@
+/* Header.module.css */
+.header {
+    background-color: #000000; /* Màu nền */
+    padding: 10px 0; /* Khoảng cách giữa header và nội dung */
+}
+
+.userButton,
+.navLink {
+    color: white; /* Màu chữ */
+    font-size: 20px;
+}
+
+.navLink:hover,
+.navLink:active,
+.navLink:focus 
+{
+    color: white; /* Màu chữ vẫn là trắng khi di chuột qua và khi được bấm vào */
+}
+
+.userButton:hover,
+.userButton:active,
+.userButton:focus,
+.userIcon:hover,
+.userIcon:active,
+.userIcon:focus{
+    color: white;
+}
+
+.navbarCollapse {
+    justify-content: flex-end; /* Căn chỉnh phần nội dung sang phải */
+}
+
+.userIcon {
+    background-color: #000000;
+}
+
+.userMenu {
+    list-style-type: none; /* Loại bỏ dấu chấm ở đầu */
+    padding: 0; /* Xóa padding mặc định */
+    margin-bottom: 0;
+}
+
+.menuItem {
+    color: black; /* Màu chữ đen */
+    text-decoration: none; /* Loại bỏ gạch chân */
+    font-size: 16px; /* Kích cỡ chữ */
+}
+
+.menuItem:hover {
+    color: rgb(106, 197, 253); /* Màu chữ đen khi di chuột qua */
+    background-color: aliceblue;
+}

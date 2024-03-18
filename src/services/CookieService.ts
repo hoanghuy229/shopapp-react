@@ -31,11 +31,16 @@ const CartService = () => {
         setCookie('cart',updateQuantity, { path: '/',maxAge: 86400});
     }
 
+    const clearCart = () => {
+        setCookie('cart', {}, { path: '/', maxAge: -1 }); // Xóa cookie 'cart' bằng cách ghi đè nó bằng một object rỗng và đặt thời gian sống là -1
+    };
+
     return {
         addToCart,
         getCart,
         removeFromCart,
-        updateQuantity
+        updateQuantity,
+        clearCart
     };
 };
 

@@ -1,6 +1,6 @@
 import { LoginDTO } from "../dtos/users/LoginDTO";
 import { RegisterDTO } from "../dtos/users/RegisterDTO"
-import { Request } from "./Request";
+import { UserResponse } from "../responses/UserResponse";
 
 export async function registerUser(registerDTO:RegisterDTO):Promise<string>{
     try{
@@ -54,3 +54,30 @@ export async function login(loginDTO:LoginDTO): Promise<string> {
         return `error : ${error}`;
     }
 }
+
+export async function getUserDetail(token: string): Promise<UserResponse> {
+    const url: string = `http://localhost:8080/api/v1/users/details`;
+
+    debugger
+    try {
+        const response = await fetch(url, {
+            method:"POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch user details. Status: ${response.status}`);
+        }
+
+        const userResponse: UserResponse = await response.json();
+        
+        return userResponse;
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        throw error;
+    }
+}
+

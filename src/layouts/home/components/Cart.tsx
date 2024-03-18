@@ -4,6 +4,8 @@ import { getProductByIds } from "../../../api/ProductApi";
 import { Product } from "../../../models/Product";
 import CartService from "../../../services/CookieService";
 import { useNavigate } from "react-router-dom";
+import { getUserId,isTokenExpired } from "../../../services/TokenService";
+
 export const Cart = () => {
 
     const [cookies] = useCookies(['cart']);
@@ -80,9 +82,28 @@ export const Cart = () => {
     }
 
     const moveToOrderConfirm = () => {
-        if(products.length === 0) return;
+        if(products.length === 0) {
+            alert("no product !!!");
+            return
+        };
 
-        navigate("/orderConfirm");
+        debugger
+        const token = localStorage.getItem("token");
+
+        if(token == null){
+            alert("need login !!!");
+            navigate("/login");
+        }
+        else {
+            const userId = getUserId(token);
+        
+            if(!isTokenExpired(token) && userId){
+                navigate("/orderConfirm");
+            }
+        }
+        
+        
+        //navigate("/orderConfirm");
     }
     
     return (

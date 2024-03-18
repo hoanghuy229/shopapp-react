@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { getProductDetail } from "../../api/ProductApi";
 import CartService from "../../services/CookieService";
 import { useNavigate } from "react-router-dom";
+import { getUserId, isTokenExpired } from "../../services/TokenService";
 
 export const ProductDetail = () => {
     const cartService = CartService();
@@ -70,7 +71,21 @@ export const ProductDetail = () => {
     const buyNow = () => {
         if(productDetail){
             cartService.addToCart(productDetail.id,quantity);
-            navigate("/orderConfirm");
+            
+            debugger
+            const token = localStorage.getItem("token");
+
+            if(token == null){
+                alert("need login !!!");
+                navigate("/login");
+            }
+            else {
+                const userId = getUserId(token);
+            
+                if(!isTokenExpired(token) && userId){
+                    navigate("/orderConfirm");
+                }
+            }
         }
         else {
             console.error('Không thể thêm sản phẩm vào giỏ hàng vì product là null.');

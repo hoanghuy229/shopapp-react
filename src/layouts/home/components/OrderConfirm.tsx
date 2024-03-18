@@ -5,6 +5,8 @@ import { getProductByIds } from "../../../api/ProductApi";
 import { OrderDTO } from "../../../dtos/orders/OrderDTO";
 import { placeOrder } from "../../../api/OrderApi";
 import { useNavigate } from "react-router-dom";
+import CartService from "../../../services/CookieService";
+import { getUserId } from "../../../services/TokenService";
 
 export const OrderConfirm = () => {
 
@@ -25,8 +27,8 @@ export const OrderConfirm = () => {
     const [note,setNote] = useState("");
     const [shippingMethod,setShippingMethod] = useState("");
     const [paymentMethod,setPaymentMethod] = useState("");
-    const [totalPrice,setTotalPrice] = useState(0);
 
+    const cartService = CartService();
     
 
     useEffect(() => {
@@ -101,6 +103,7 @@ export const OrderConfirm = () => {
     }
 
     const handleSubmit = async (e:React.FormEvent) => {
+        debugger
         e.preventDefault();
 
         if(!validateUserEmail(email)){
@@ -121,8 +124,18 @@ export const OrderConfirm = () => {
 
         const totalPrice = getTotalPrice();
 
+        const token = localStorage.getItem("token");
+        if(token == null){
+            return;
+        }
+        const userId = getUserId(token);
+
+        if(userId === undefined){
+            return;
+        }
+
         const orderDTO:OrderDTO = {
-            user_id: 5,
+            user_id: userId,
             fullname: fullname,
             email: email,
             phone_number: phoneNumber,
@@ -136,7 +149,9 @@ export const OrderConfirm = () => {
 
         const response = await placeOrder(orderDTO);
         if(response.includes("create order success")){
-            setError("create order success");
+            alert("order success");
+            cartService.clearCart();
+            navigate("/");
         }
         else{
             setError(response);

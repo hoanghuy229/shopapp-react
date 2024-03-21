@@ -1,5 +1,7 @@
 import { LoginDTO } from "../dtos/users/LoginDTO";
 import { RegisterDTO } from "../dtos/users/RegisterDTO"
+import { ResetPasswordDTO } from "../dtos/users/ResetPasswordDTO";
+import { UpdateUserDTO } from "../dtos/users/UpdateUserDTO";
 import { UserResponse } from "../responses/UserResponse";
 
 export async function registerUser(registerDTO:RegisterDTO):Promise<string>{
@@ -81,3 +83,93 @@ export async function getUserDetail(token: string): Promise<UserResponse> {
     }
 }
 
+export async function updateUserDetail(token:string,updateUserDTO:UpdateUserDTO):Promise<string> {
+    debugger
+
+    try{
+        let userResponseJSON = localStorage.getItem('user');
+    
+        let userResponse:UserResponse = userResponseJSON? JSON.parse(userResponseJSON):null;
+        
+        const url:string = `http://localhost:8080/api/v1/users/details/${userResponse.id}`;
+
+        const response = await fetch(url,{
+            method:"PUT",
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body:JSON.stringify({
+                fullname: updateUserDTO.fullname,   
+                address: updateUserDTO.address,   
+                date_of_birth: updateUserDTO.date_of_birth
+            })
+        })
+
+        if(!response.ok){
+            return "update fail!!!";
+        }
+        return "update success!!!";
+    }
+    catch(error){
+        console.log(`${error}`);
+        return "update fail!!!";
+    }
+    
+}
+
+
+
+export function forgetPassword(phoneNumber:string) {
+    const url:string = `http://localhost:8080/api/v1/users/otp/forgetPassword`;
+    return Otpsending(url,phoneNumber);
+}
+
+export function validOtp(otp:string,phoneNumber:string) {
+    const url:string = `http://localhost:8080/api/v1/users/otp/validateOtp?otp=${otp}`;
+    return Otpsending(url,phoneNumber);
+}
+
+async function Otpsending(url:string,phoneNumber:string):Promise<String> {
+    try{
+        const response = await fetch(url,{
+            method:"POST",
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                phone_number:phoneNumber
+            })
+        })
+
+        if(!response.ok){
+           return "have error";
+        }
+        return "success"
+    }
+    catch(error){
+        throw new Error(`${error}`);
+    }
+}
+
+export async function resetPassword(resetPasswordDT0:ResetPasswordDTO,phoneNumber:string,otp:string):Promise<any> {
+    debugger
+    const url:string = `http://localhost:8080/api/v1/users/otp/resetPassword?phone_number=${phoneNumber}&otp=${otp}`;
+
+    try{
+        const response = await fetch(url,{
+            method:"POST",
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                password:resetPasswordDT0.password,
+                re_password:resetPasswordDT0.re_password
+            })
+        })
+        return response.text();
+    }
+    catch(error){
+        throw new Error(`${error}`);
+    }
+}

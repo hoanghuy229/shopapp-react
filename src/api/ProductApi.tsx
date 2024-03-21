@@ -66,6 +66,7 @@ export async function getProductDetail(productId:number):Promise<Product | null>
 }
 
 export async function getProductByIds(productIds:number[]):Promise<Product[]>{
+    debugger
     // Chuyển mảng productIds thành chuỗi, phân cách bằng dấu ","
     const idsString: string = productIds.join(',');
 

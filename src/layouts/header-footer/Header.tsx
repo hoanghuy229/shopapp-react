@@ -64,7 +64,7 @@ export function Header() {
                                                                 <Link to="/profile" className={styles.menuItem}>Profile</Link>
                                                             </li>
                                                             <li>
-                                                                <Link to="/order-history" className={styles.menuItem}>Order History</Link>
+                                                                <Link to="/orderHistory" className={styles.menuItem}>Order History</Link>
                                                             </li>
                                                             <li>
                                                                 <a href="/" onClick={handleLogOut} className={styles.menuItem}>Log Out</a>

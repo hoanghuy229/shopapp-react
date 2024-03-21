@@ -158,6 +158,14 @@ export const OrderConfirm = () => {
         }
     }
 
+    if(localStorage.getItem('user') === null){
+        alert("login to order!!!");
+        navigate("/login");
+        return(
+            <h1>login to order !!!</h1>
+        );
+    }
+
     return (
         <div className="container">
     <div className="intro-section">

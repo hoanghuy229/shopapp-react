@@ -1,4 +1,6 @@
 import { OrderDTO } from "../dtos/orders/OrderDTO";
+import { OrderResponse } from "../responses/OrderResponse";
+import { UserResponse } from "../responses/UserResponse";
 
 // Phương thức để lấy token từ Local Storage
 const getTokenFromLocalStorage = (): string | null => {
@@ -48,4 +50,32 @@ export async function placeOrder(orderDTO: OrderDTO): Promise<string> {
         console.log(error);
         return `${error}`;
     }
+}
+
+export async function getOrdersOfUser():Promise<OrderResponse[]> {
+    debugger
+   try{
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Token not found in Local Storage');
+        }
+        let userResponseJSON = localStorage.getItem('user');
+        let userResponse:UserResponse = userResponseJSON?JSON.parse(userResponseJSON) : null;
+
+        const url:string = `http://localhost:8080/api/v1/orders/user/${userResponse.id}`;
+
+        const response = await fetch(url,{
+            method:"GET",
+            headers:{
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+
+        const data = response.json();
+        return data;
+   }
+   catch(error){
+    throw new Error(`${error}`);
+   }
 }

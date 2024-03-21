@@ -16,33 +16,34 @@ export const Login = () => {
     }
 
     const handleLogin = async () => {
-        debugger
-        const loginDTO:LoginDTO = {
-            phone_number:phoneNumber,
-            password:password,
-        }
+        const loginDTO = {
+            phone_number: phoneNumber,
+            password: password,
+        };
+    
         try {
-            const response: string = await login(loginDTO); // Gọi API đăng nhập và nhận token
+            const response = await login(loginDTO);
             if (response.includes("Invalid username or password")) {
                 setError("Invalid username or password!");
-            }
-            else{
-                if (rememberme) {
-                    const token = response;
-                    localStorage.setItem("token", token); // Lưu token vào localStorage
-
-                    //lấy thông tin user lưu vào localstorage
-                    getUserDetail(token).then((userResponse) => {
-                        localStorage.setItem("user", JSON.stringify(userResponse));
-                        window.location.reload(); // Reload trang để cập nhật UI
-                    });
-                }
-                navigate("/");
+            } else {
+                const token = response;
+                localStorage.setItem("token", token);
+    
+                getUserDetail(token).then((userResponse) => {
+                    localStorage.setItem("user", JSON.stringify(userResponse));
+                    const { role } = userResponse; //lấy trường role trong userResponse
+                    if (role && role.id === 1) {
+                        navigate("/dashboard"); //vào admin
+                    } else {
+                        navigate("/");//vào trang chủ
+                    }
+                });
             }
         } catch (error) {
             setError("Invalid username or password!");
         }
-    }
+    };
+    
 
     return(
         <div className="container">
@@ -72,7 +73,7 @@ export const Login = () => {
                         </div>
                         <div className="form-group">
                         <div className="mt-3"></div>
-                            <a href="#" className="register-link">Quên mật khẩu</a>
+                            <a href="/forgetPassword" className="register-link">Quên mật khẩu</a>
                         <button type="button" className="login-button btn btn-outline-success " style={{marginLeft:"160px"}} onClick={handleLogin}>Đăng nhập</button>
                         <div className="divider"></div>
                         </div>

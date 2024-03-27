@@ -82,6 +82,7 @@ export const Cart = () => {
     }
 
     const moveToOrderConfirm = () => {
+        debugger
         if(products.length === 0) {
             alert("no product !!!");
             return

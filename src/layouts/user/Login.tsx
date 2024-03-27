@@ -23,8 +23,8 @@ export const Login = () => {
     
         try {
             const response = await login(loginDTO);
-            if (response.includes("Invalid username or password")) {
-                setError("Invalid username or password!");
+            if (response.includes("invalid information !!!") || response.includes("role doesn't existed !!!") || response.includes("your account is banned !!!")) {
+                setError(`${response}`);
             } else {
                 const token = response;
                 localStorage.setItem("token", token);

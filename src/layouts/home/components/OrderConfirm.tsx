@@ -148,13 +148,14 @@ export const OrderConfirm = () => {
         }
 
         const response = await placeOrder(orderDTO);
-        if(response.includes("create order success")){
+        if(response.includes("order success")){
             alert("order success");
             cartService.clearCart();
             navigate("/");
         }
         else{
-            setError(response);
+            alert(response);
+            navigate("/login");
         }
     }
 

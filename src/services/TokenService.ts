@@ -21,6 +21,7 @@ export function getUserId(token:string | null) {
 }
 
 export function isTokenExpired(token: string): boolean {
+    debugger
   try {
       if (token == null) {
           return false;

@@ -1,9 +1,14 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { UserResponse } from "../../../../responses/UserResponse";
-import { getAllUser } from "../../../../api/AdminApi";
+import { DeleteUser, getAllUser } from "../../../../api/AdminApi";
 import { Pagination } from "../../../utils/Pagination";
+import { format } from 'date-fns';
 
-export const AllUser = () => {
+interface AllUser {
+    handleAddUserView:any;
+}
+
+export const AllUser:React.FC<AllUser> = (props) => {
     const [currentPage,setCurrentPage] = useState(1);
     const [totalPage,setTotalPage] = useState(0);
     const [users,setUsers] = useState<UserResponse[]>([]);
@@ -41,6 +46,18 @@ export const AllUser = () => {
     const handleSearch = (e:ChangeEvent<HTMLInputElement>) => {
         setMomentKeyword(e.target.value);
     }
+
+    const handleActivating = async (useId:number) => {
+        if(window.confirm(`are you sure ?`)){
+            const response = await DeleteUser(useId);
+            if(response.includes("successfully")){
+                alert("success !!!");
+                window.location.reload();
+            }else{
+                alert("failed!!!");
+            }
+        }
+    }
     
     return (
         <div className="container mt-5 mb-5">
@@ -54,7 +71,7 @@ export const AllUser = () => {
                     style={{width:"300px"}}
                 />
                 <button className="btn btn-outline-primary" style={{marginLeft:"30px",fontSize:"20px"}} onClick={clickFind}>FIND USER</button>
-                <button className="btn btn-primary ml-2" style={{marginLeft:"30px",fontSize:"20px"}} >ADD USER</button>
+                <button className="btn btn-primary ml-2" style={{marginLeft:"30px",fontSize:"20px"}} onClick={()=>props.handleAddUserView()}>ADD USER</button>
 
             </div>
             <div className="table-responsive">
@@ -65,11 +82,10 @@ export const AllUser = () => {
                             <th>Fullname</th>
                             <th>Phone Number</th>
                             <th>Address</th>
+                            <th>DateOfBirth</th>
                             <th>Is Active</th>
                             <th>Role</th>
-                            <th>Delete</th>
-                            <th>Update</th>
-                            <th>Detail</th>
+                            <th>Activating</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,11 +95,13 @@ export const AllUser = () => {
                                 <td>{user.fullname}</td>
                                 <td>{user.phone_number}</td>
                                 <td>{user.address}</td>
+                                <td>{format(new Date(user.date_of_birth), 'yyyy/MM/dd')}</td>
                                 <td>{active[user.id]}</td>
                                 <td>{user.role.name}</td>
-                                <td><button className="btn btn-outline-danger" style={{fontSize:"13px"}}>DELETE</button></td>
-                                <td><button className="btn btn-outline-warning" style={{fontSize:"13px"}}>UPDATE</button></td>
-                                <td><button className="btn btn-outline-success" style={{fontSize:"13px"}}>DETAIL</button></td>
+                                <td>
+                                    <button hidden={active[user.id] === "false"} className="btn btn-outline-danger" style={{fontSize:"13px"}} onClick={(e)=>handleActivating(user.id)}>UNACTIVE</button>
+                                    <button hidden={active[user.id] === "true"} className="btn btn-outline-primary" style={{fontSize:"13px"}} onClick={(e)=>handleActivating(user.id)}>ACTIVE</button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

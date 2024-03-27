@@ -7,6 +7,7 @@ import { getProductDetail } from "../../api/ProductApi";
 import CartService from "../../services/CookieService";
 import { useNavigate } from "react-router-dom";
 import { getUserId, isTokenExpired } from "../../services/TokenService";
+import { ProductComments } from "./components/ProductComments";
 
 export const ProductDetail = () => {
     const cartService = CartService();
@@ -122,6 +123,9 @@ export const ProductDetail = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div>
+                <ProductComments productId={productIdNumber}></ProductComments>
             </div>
         </div>
     );

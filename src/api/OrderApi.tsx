@@ -9,6 +9,7 @@ const getTokenFromLocalStorage = (): string | null => {
 
 // Phương thức đặt hàng
 export async function placeOrder(orderDTO: OrderDTO): Promise<string> {
+    debugger
     const url: string = `http://localhost:8080/api/v1/orders`;
 
     try {
@@ -41,11 +42,11 @@ export async function placeOrder(orderDTO: OrderDTO): Promise<string> {
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`Cannot access ${url}`);
+        if(response.status === 403){
+            return "please login !!!"
         }
 
-        return "create order success";
+        return response.text();
     } catch (error) {
         console.log(error);
         return `${error}`;

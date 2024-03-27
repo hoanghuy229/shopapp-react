@@ -22,7 +22,10 @@ export const Profile = () => {
                     setDateOfBirth(new Date(userResponse.date_of_birth).toISOString().split("T")[0]);
                     setFullName(userResponse.fullname);
                 })
-                .catch((error) => console.log(error));
+                .catch((error) => {
+                    alert(`${error}`);
+                    navigate("/login");
+                });
         }
     }, []);
 
@@ -58,6 +61,9 @@ export const Profile = () => {
         }
     }
 
+    const handleOrderHistory = () => {
+        navigate("/orderHistory")
+    }
 
     if(localStorage.getItem('user') === null){
         alert("login!!!");
@@ -130,7 +136,7 @@ export const Profile = () => {
                         </div>
                     </div>
                     <div className="d-flex justify-content-center align-center" style={{ margin: "50px" }}>
-                        <button className="btn btn-outline-success" style={{ width: "150px", height: "50px", marginRight: "100px" }}>
+                        <button className="btn btn-outline-success" style={{ width: "150px", height: "50px", marginRight: "100px" }} onClick={handleOrderHistory}>
                             Order History
                         </button>
                         <button 

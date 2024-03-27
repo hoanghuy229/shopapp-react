@@ -1,8 +1,10 @@
+import { CommentDTO } from "../dtos/users/CommentDTO";
 import { LoginDTO } from "../dtos/users/LoginDTO";
 import { RegisterDTO } from "../dtos/users/RegisterDTO"
 import { ResetPasswordDTO } from "../dtos/users/ResetPasswordDTO";
 import { UpdateUserDTO } from "../dtos/users/UpdateUserDTO";
 import { UserResponse } from "../responses/UserResponse";
+import { jwtDecode } from "jwt-decode";
 
 export async function registerUser(registerDTO:RegisterDTO):Promise<string>{
     try{
@@ -32,7 +34,7 @@ export async function registerUser(registerDTO:RegisterDTO):Promise<string>{
     }
 }
 
-export async function login(loginDTO:LoginDTO): Promise<string> {
+export async function login(loginDTO:LoginDTO): Promise<any> {
     try {
         const url: string = `http://localhost:8080/api/v1/users/login`;
 
@@ -44,10 +46,6 @@ export async function login(loginDTO:LoginDTO): Promise<string> {
                 password: loginDTO.password
             })
         });
-
-        if (!response.ok) {
-            return "Invalid username or password";
-        }
             
         return response.text();
        
@@ -57,7 +55,7 @@ export async function login(loginDTO:LoginDTO): Promise<string> {
     }
 }
 
-export async function getUserDetail(token: string): Promise<UserResponse> {
+export async function getUserDetail(token: string): Promise<any> {
     const url: string = `http://localhost:8080/api/v1/users/details`;
 
     debugger
@@ -71,7 +69,7 @@ export async function getUserDetail(token: string): Promise<UserResponse> {
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to fetch user details. Status: ${response.status}`);
+            throw new Error(`${response.status}`);
         }
 
         const userResponse: UserResponse = await response.json();
@@ -172,4 +170,82 @@ export async function resetPassword(resetPasswordDT0:ResetPasswordDTO,phoneNumbe
     catch(error){
         throw new Error(`${error}`);
     }
+}
+
+export async function submitComment(productId:number,content:string,points:number):Promise<any> {
+    debugger
+    const url:string = `http://localhost:8080/api/v1/comments?product_id=${productId}`;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in Local Storage');
+    }
+
+    // Giải mã token hứng value của thuộc tính userId
+    const decodedToken: { userId: number } = jwtDecode(token);
+
+    // Lấy userId từ claims
+    const userId:number = decodedToken.userId;
+
+    const commentDTO:CommentDTO = {
+        product_id:productId,
+        user_id:userId,
+        content:content,
+        points:points
+    }
+
+    const response = await fetch(url,{
+        method:"POST",
+        headers:{
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify(commentDTO)
+    })
+
+    return response.text();
+}
+export async function deleteComment(commentId:number):Promise<any> {
+    const url:string = `http://localhost:8080/api/v1/comments/${commentId}`;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in Local Storage');
+    }
+
+    const response = await fetch(url,{
+        method:"DELETE",
+        headers:{
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+
+    return response.text();
+}
+
+export async function updateComment(commentId:number,commentDTO:CommentDTO):Promise<any> {
+    const url:string = `http://localhost:8080/api/v1/comments/${commentId}`;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in Local Storage');
+    }
+
+    const response = await fetch(url,{
+        method:"PUT",
+        headers:{
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({
+            product_id:commentDTO.product_id,
+            user_id:commentDTO.user_id,
+            content:commentDTO.content,
+            points:commentDTO.points
+        })
+    })
+
+    return response.text();
+    
 }

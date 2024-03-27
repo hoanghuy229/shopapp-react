@@ -15,7 +15,10 @@ export const OrderHistory = () => {
             .then((data) => {
                 setOrderResponses(data);
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+                alert("please login!!!");
+                navigate("/login");
+            });
     }, []);
 
 

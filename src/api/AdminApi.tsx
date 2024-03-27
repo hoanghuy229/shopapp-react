@@ -1,6 +1,8 @@
 import React from "react";
 import { OrderResponse } from "../responses/OrderResponse";
 import { UserResponse } from "../responses/UserResponse";
+import { Request } from "./Request";
+import { OrderDTO } from "../dtos/orders/OrderDTO";
 
 
 interface ResultOrder{
@@ -92,4 +94,163 @@ export async function getAllOrder(page:number,keyword:string):Promise<ResultOrde
         })
     }
     return {result:result,totalPage:totalPage}
+}
+
+export async function getOrderById(id:number):Promise<OrderResponse> {
+    const url:string = `http://localhost:8080/api/v1/orders/${id}`;
+
+    try{
+        
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in Local Storage');
+    }
+    const response = await fetch(url,{
+            method:"GET",
+            headers:{
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+    const data = response.json();
+    return data;
+    }
+
+    catch(error){
+        throw new Error(`${error}`);
+    }
+}
+
+export async function updateOrderById(id:number,orderResponse:OrderResponse):Promise<String> {
+    debugger
+    const url:string = `http://localhost:8080/api/v1/orders/${id}`;
+
+    try{
+        
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Token not found in Local Storage');
+        }
+        const response = await fetch(url,{
+                method:"PUT",
+                headers:{
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({
+                    address: orderResponse.address,
+                    note: orderResponse.note,
+                    status: orderResponse.status,
+                    user_id: orderResponse.user_id,
+                    fullname: orderResponse.fullname,
+                    phone_number: orderResponse.phone_number,
+                    order_date: orderResponse.order_date,
+                    total_price: orderResponse.total_price,
+                    shipping_method: orderResponse.shipping_method,
+                    shipping_address: orderResponse.shipping_address,
+                    shipping_date: orderResponse.shipping_date,
+                    tracking_number: orderResponse.tracking_number,
+                    payment_method: orderResponse.payment_method,
+                    active: orderResponse.active,
+                    order_details:orderResponse.order_details
+                })
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Cannot access ${url}`);
+            }
+    
+            return "update success";
+        }
+    
+        catch(error){
+            throw new Error(`${error}`);
+        }
+}
+
+export async function DeleteUser(useId:number):Promise<any> {
+    const url:string = `http://localhost:8080/api/v1/users/admin/${useId}`;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in Local Storage');
+    }
+
+    const response = await fetch(url,{
+        method:"DELETE",
+        headers:{
+            'Authorization': `Bearer ${token}`,
+        },
+    })
+    if (!response.ok) {
+        throw new Error(`Cannot access ${url}`);
+    }
+
+    return response.text();
+    
+}
+
+export function AddNewCategory(cateName:String):Promise<any> {
+    const url:string =`http://localhost:8080/api/v1/categories`;
+    return manageCate(url,"POST",cateName);
+
+}
+
+export function UpdateCategory(cateId:number,cateName:String):Promise<any> {
+    const url:string =`http://localhost:8080/api/v1/categories/${cateId}`;
+    return manageCate(url,"PUT",cateName);
+
+}
+
+export function DeleteCategory(cateId:number):Promise<any> {
+    const url:string =`http://localhost:8080/api/v1/categories/${cateId}`;
+    return manageCate(url,"DELETE","");
+
+}
+
+async function manageCate(url:string,method:string,cateName:String):Promise<any> {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in Local Storage');
+    }
+
+const response = await fetch(url,{
+    method:`${method}`,
+    headers:{
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify({
+        name:cateName
+    })
+})
+if (!response.ok) {
+    throw new Error(`Cannot access ${url}`);
+}
+
+return response.text();
+}
+
+export async function deleteProduct(productId:number):Promise<string> {
+    const url:string = `http://localhost:8080/api/v1/products/${productId}`;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in Local Storage');
+    }
+
+    const response = await fetch(url,{
+        method:"DELETE",
+        headers:{
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+
+    if (!response.ok) {
+        throw new Error(`Cannot access ${url}`);
+    }
+    
+    return response.text();
 }

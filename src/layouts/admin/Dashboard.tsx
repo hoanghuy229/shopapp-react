@@ -5,15 +5,22 @@ import { AllUser } from "./components/users/AllUser";
 import { AllCategory } from "./components/categories/AllCategory";
 import { AllProduct } from "./components/products/AllProduct";
 import { AllOrder } from "./components/orders/AllOrder";
+import { OrderDetail } from "./components/orders/OrderDetail";
+import { AddUser } from "./components/users/AddUser";
 
 export const Dashboard = () => {
     const navigate = useNavigate();
     const [hoveredItem, setHoveredItem] = useState(null);
     const [showComponents,setShowComponents] = useState("");
+    const [selectedOrder, setSelectedOrder] = useState(0);
+    const [addUser,setAddUser] = useState(false);
 
     const showView = (showView:string) => {
         setShowComponents(showView);
+        setSelectedOrder(0);
+        setAddUser(false);
     }
+    
 
     const handleMouseEnter = (itemName:any) => {
         setHoveredItem(itemName);
@@ -43,6 +50,18 @@ export const Dashboard = () => {
         localStorage.removeItem('user');
         navigate("/login");
     }
+
+    const handleOrderDetailClick = (orderId:number) => {
+        // Khi người dùng nhấn vào nút "DETAIL", cập nhật thông tin đơn hàng được chọn
+        setSelectedOrder(orderId);
+        setShowComponents("");
+    }
+
+    const handleAddUserView = () => {
+        setAddUser(true);
+        setShowComponents("");
+    }
+
 
     return (
         <div className="container-fluid" style={{paddingLeft:"0 ",paddingRight:"0 "}}>
@@ -96,10 +115,12 @@ export const Dashboard = () => {
                     </div>
                 </nav>
                 <main className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-                    {showComponents === 'Users' && <AllUser></AllUser>}
-                    {showComponents === 'Products' && <AllProduct></AllProduct>}
-                    {showComponents === 'Categories' && <AllCategory></AllCategory>}
-                    {showComponents === 'Orders' && <AllOrder></AllOrder>}
+                    {addUser && <AddUser></AddUser>}
+                    {selectedOrder > 0  && <OrderDetail order={selectedOrder}/>}
+                    {showComponents === 'Users' && <AllUser handleAddUserView={handleAddUserView}/>}
+                    {showComponents === 'Products' && <AllProduct />}
+                    {showComponents === 'Categories' && <AllCategory />}
+                    {showComponents === 'Orders' && <AllOrder handleOrderDetailClick={handleOrderDetailClick}/>}
                 </main>
             </div>
         </div>

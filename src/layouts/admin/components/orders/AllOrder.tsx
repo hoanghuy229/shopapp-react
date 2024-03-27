@@ -3,14 +3,20 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { OrderResponse } from "../../../../responses/OrderResponse";
 import { getAllOrder } from "../../../../api/AdminApi";
 import { Pagination } from "../../../utils/Pagination";
+import { useNavigate } from "react-router-dom";
 
-export const AllOrder = () => {
+interface AllOrder{
+    handleOrderDetailClick:any;
+}
+
+export const AllOrder:React.FC<AllOrder> = (props) => {
     const [currentPage,setCurrentPage] = useState(1);
     const [totalPage,setTotalPage] = useState(0);
     const [orders,setOrders] = useState<OrderResponse[]>([]);
     const [keyword,setKeyword] = useState("");
     const [momentKeyword,setMomentKeyword] = useState("");
     const [active,setActive] = useState<{[key:number]:string}>({});
+
 
     useEffect(() =>{
         debugger
@@ -42,7 +48,6 @@ export const AllOrder = () => {
         setMomentKeyword(e.target.value);
     }
 
-
     return (
         <div className="container mt-5 mb-5">
              <div className="d-flex mb-3">
@@ -66,8 +71,6 @@ export const AllOrder = () => {
                             <th>Phone Number</th>
                             <th>Status</th>
                             <th>Active</th>
-                            <th>Delete</th>
-                            <th>Update</th>
                             <th>Detail</th>
                         </tr>
                     </thead>
@@ -80,9 +83,7 @@ export const AllOrder = () => {
                                 <td>{order.phone_number}</td>
                                 <td>{order.status}</td>
                                 <td>{active[order.id]}</td>
-                                <td><button className="btn btn-outline-danger" style={{fontSize:"13px"}}>DELETE</button></td>
-                                <td><button className="btn btn-outline-warning" style={{fontSize:"13px"}}>UPDATE</button></td>
-                                <td><button className="btn btn-outline-success" style={{fontSize:"13px"}}>DETAIL</button></td>
+                                <td><button className="btn btn-outline-success" style={{fontSize:"13px"}} onClick={() =>props.handleOrderDetailClick(order.id)}>DETAIL</button></td>
                             </tr>
                         ))}
                     </tbody>

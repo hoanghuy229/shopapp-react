@@ -4,6 +4,7 @@ import { getAllProduct } from "../../../../api/ProductApi";
 import { Category } from "../../../../models/Category";
 import { getCategory } from "../../../../api/CategoryApi";
 import { Pagination } from "../../../utils/Pagination";
+import { deleteProduct } from "../../../../api/AdminApi";
 
 export const AllProduct = () => {
     const [products,setProducts] = useState<Product[]>([]);
@@ -43,7 +44,18 @@ export const AllProduct = () => {
     const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const value = parseInt(event.target.value);
         setSelectCategory(value);
-      };
+    };
+
+    const handleDelete = async (productId:number) => {
+        if(window.confirm("are you sure ?")){
+            deleteProduct(productId)
+            .then(response => {
+                alert(`${response}`);
+                setProducts(products.filter(product => product.id !== productId));
+            })
+            .catch(error => console.log(error));
+        }
+    }
 
     const clickFind = () => {
         setKeyword(momentKeyword);
@@ -77,7 +89,6 @@ export const AllProduct = () => {
                             <th>Price</th>
                             <th>Category ID</th>
                             <th>Delete</th>
-                            <th>Update</th>
                             <th>Detail</th>
                         </tr>
                     </thead>
@@ -89,8 +100,7 @@ export const AllProduct = () => {
                                 <td>{product.name}</td>
                                 <td>{product.price}</td>
                                 <td>{product.category_id}</td>
-                                <td><button className="btn btn-outline-danger" style={{fontSize:"13px"}}>DELETE</button></td>
-                                <td><button className="btn btn-outline-warning" style={{fontSize:"13px"}}>UPDATE</button></td>
+                                <td><button className="btn btn-outline-danger" style={{fontSize:"13px"}} onClick={() => handleDelete(product.id)}>DELETE</button></td>
                                 <td><button className="btn btn-outline-success" style={{fontSize:"13px"}}>DETAIL</button></td>
                             </tr>
                         ))}

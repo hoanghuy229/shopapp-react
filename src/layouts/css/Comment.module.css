@@ -1,0 +1,5 @@
+.highlight-comment {
+    background-color: #f5f5f5; /* Màu nền của comment nổi bật */
+    border-left: 5px solid #007bff; /* Viền bên trái của comment nổi bật */
+    padding: 10px; /* Khoảng cách giữa nội dung và viền */
+}

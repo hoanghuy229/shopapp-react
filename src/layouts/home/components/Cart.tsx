@@ -149,16 +149,8 @@ export const Cart = () => {
                 </tr>
             ))
         }
-    </tbody>
-</table>
-
-            </div>
-
-            <div className="input-group mb-3 mt-3 col-6">
-                <input type="text" className="form-control" placeholder="Mã giảm giá" />
-                <div className="input-group-append" style={{ marginLeft: '10px' }}>
-                    <button className="btn btn-outline-secondary" type="button">Áp dụng mã</button>
-                </div>
+        </tbody>
+    </table>
             </div>
 
             <p className="mb-0">Tổng tiền: <span>{getTotalPrice().toFixed(1)} $</span></p>

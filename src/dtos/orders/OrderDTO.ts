@@ -8,9 +8,7 @@ export class OrderDTO {
     total_price: number;
     shipping_method: string;
     payment_method: string;
-  
     cart_items: { product_id: number, quantity: number }[]; // Thêm cart_items để lưu thông tin giỏ hàng
-  
   
     constructor(
         user_id: number,
@@ -22,7 +20,7 @@ export class OrderDTO {
         total_price: number,
         shipping_method: string,
         payment_method: string,
-        cart_items: { product_id: number, quantity: number }[]
+        cart_items: { product_id: number, quantity: number }[],
     ) {
       this.user_id = user_id;
       this.fullname = fullname;

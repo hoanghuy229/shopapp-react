@@ -3,7 +3,7 @@ import { useCookies } from "react-cookie";
 import { Product } from "../../../models/Product";
 import { getProductByIds } from "../../../api/ProductApi";
 import { OrderDTO } from "../../../dtos/orders/OrderDTO";
-import { placeOrder } from "../../../api/OrderApi";
+import { discountCoupon, placeOrder } from "../../../api/OrderApi";
 import { useNavigate } from "react-router-dom";
 import CartService from "../../../services/CookieService";
 import { getUserId } from "../../../services/TokenService";
@@ -18,7 +18,7 @@ export const OrderConfirm = () => {
     const [checkPhoneNumber,setCheckPhoneNumber] = useState("");
     const [checkEmail,setCheckEmail] = useState("");
     const [error,setError] = useState("");
-
+    const [couponMessage,setCouponMessage] = useState("");
 
     const [phoneNumber,setPhoneNumber] = useState("");
     const [email,setEmail] = useState("");
@@ -27,6 +27,8 @@ export const OrderConfirm = () => {
     const [note,setNote] = useState("");
     const [shippingMethod,setShippingMethod] = useState("");
     const [paymentMethod,setPaymentMethod] = useState("");
+    const [couponCode,setCouponCode] = useState("");
+    const [discountPrice,setDiscountPrice] = useState(0);
 
     const cartService = CartService();
     
@@ -98,6 +100,18 @@ export const OrderConfirm = () => {
 
     }
 
+    const handleCoupon = async () => {
+        debugger
+        if(couponCode === ""){
+            return;
+        }
+        const totalPrice = getTotalPrice();
+        const response = await discountCoupon(couponCode,totalPrice);
+
+        setDiscountPrice(response.final_price);
+        setCouponMessage(`${response.message} and total price : ${response.final_price}$`)
+    }
+
     const backToCart = () => {
         navigate("/cart");
     }
@@ -122,8 +136,6 @@ export const OrderConfirm = () => {
             quantity : quantites[productId]
         }))
 
-        const totalPrice = getTotalPrice();
-
         const token = localStorage.getItem("token");
         if(token == null){
             return;
@@ -133,6 +145,16 @@ export const OrderConfirm = () => {
         if(userId === undefined){
             return;
         }
+
+        let totalPrice = 0;
+
+        if(discountPrice === 0){
+            totalPrice = getTotalPrice();
+        }
+        if(discountPrice !== 0){
+            totalPrice = discountPrice;
+        }
+
 
         const orderDTO:OrderDTO = {
             user_id: userId,
@@ -144,7 +166,7 @@ export const OrderConfirm = () => {
             total_price: totalPrice,
             shipping_method: shippingMethod,
             payment_method: paymentMethod,
-            cart_items: cartItems
+            cart_items: cartItems,
         }
 
         const response = await placeOrder(orderDTO);
@@ -155,7 +177,8 @@ export const OrderConfirm = () => {
         }
         else{
             alert(response);
-            navigate("/login");
+            console.log(response);
+            //navigate("/login");
         }
     }
 
@@ -254,10 +277,15 @@ export const OrderConfirm = () => {
         </div>
     </div>
     <div className="mt-3">
-        <h4 className="product-header">Nhập coupon</h4>
+       <div className="d-flex">
+            <h4 className="product-header">Nhập coupon</h4>
+            {
+                couponMessage && (<p style={{color:'red',marginLeft:"30px"}}>{couponMessage}</p>)
+            }
+       </div>
         <div className="input-group">
-            <input type="text" className="form-control" placeholder="Nhập coupon"/>
-            <button className="btn btn-gradient" type="button">Áp dụng</button>
+            <input type="text" className="form-control" placeholder="Nhập coupon" value={couponCode} onChange={(e) => setCouponCode(e.target.value)}/>
+            <button className="btn btn-light" type="button" onClick={handleCoupon}>Áp dụng</button>
         </div>
     </div>
     <div className="mt-5 d-flex justify-content-center align-items-center">

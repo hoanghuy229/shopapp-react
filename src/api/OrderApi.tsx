@@ -1,6 +1,8 @@
 import { OrderDTO } from "../dtos/orders/OrderDTO";
+import { CouponResponse } from "../responses/CouponResponse";
 import { OrderResponse } from "../responses/OrderResponse";
 import { UserResponse } from "../responses/UserResponse";
+import { Request } from "./Request";
 
 // Phương thức để lấy token từ Local Storage
 const getTokenFromLocalStorage = (): string | null => {
@@ -38,7 +40,7 @@ export async function placeOrder(orderDTO: OrderDTO): Promise<string> {
                 total_price: orderDTO.total_price,
                 shipping_method: orderDTO.shipping_method,
                 payment_method: orderDTO.payment_method,
-                cart_items: orderDTO.cart_items
+                cart_items: orderDTO.cart_items,
             })
         });
 
@@ -79,4 +81,17 @@ export async function getOrdersOfUser():Promise<OrderResponse[]> {
    catch(error){
     throw new Error(`${error}`);
    }
+}
+
+export async function discountCoupon(couponCode: string, totalPrice: number): Promise<CouponResponse> {
+        try{
+            const url: string = `http://localhost:8080/api/v1/discount?couponCode=${couponCode}&totalPrice=${totalPrice}`;
+        const response = await Request(url);
+
+        return { final_price: response.final_price, message: response.message };
+        }
+        catch(error){
+            return { final_price: totalPrice, message: "coupon invalid !!!" };
+        }
+
 }

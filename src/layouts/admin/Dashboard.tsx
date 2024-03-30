@@ -7,6 +7,8 @@ import { AllProduct } from "./components/products/AllProduct";
 import { AllOrder } from "./components/orders/AllOrder";
 import { OrderDetail } from "./components/orders/OrderDetail";
 import { AddUser } from "./components/users/AddUser";
+import { AddProduct } from "./components/products/AddProduct";
+import { ProductDetailView } from "./components/products/productDetailView";
 
 export const Dashboard = () => {
     const navigate = useNavigate();
@@ -14,11 +16,15 @@ export const Dashboard = () => {
     const [showComponents,setShowComponents] = useState("");
     const [selectedOrder, setSelectedOrder] = useState(0);
     const [addUser,setAddUser] = useState(false);
+    const [addProduct,setAddProduct] = useState(false);
+    const [selectProduct,setSelectProduct] = useState(0);
 
     const showView = (showView:string) => {
         setShowComponents(showView);
         setSelectedOrder(0);
         setAddUser(false);
+        setAddProduct(false);
+        setSelectProduct(0);
     }
     
 
@@ -59,6 +65,15 @@ export const Dashboard = () => {
 
     const handleAddUserView = () => {
         setAddUser(true);
+        setShowComponents("");
+    }
+    const handleAddProduct = () => {
+        setAddProduct(true);
+        setShowComponents("");
+    }
+
+    const handleProductDetail = (productId:number) => {
+        setSelectProduct(productId);
         setShowComponents("");
     }
 
@@ -116,9 +131,11 @@ export const Dashboard = () => {
                 </nav>
                 <main className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                     {addUser && <AddUser></AddUser>}
+                    {addProduct && <AddProduct></AddProduct>}
+                    {selectProduct > 0 && <ProductDetailView product={selectProduct}></ProductDetailView>}
                     {selectedOrder > 0  && <OrderDetail order={selectedOrder}/>}
                     {showComponents === 'Users' && <AllUser handleAddUserView={handleAddUserView}/>}
-                    {showComponents === 'Products' && <AllProduct />}
+                    {showComponents === 'Products' && <AllProduct handleAddProduct={handleAddProduct} handleProductDetail={handleProductDetail}/>}
                     {showComponents === 'Categories' && <AllCategory />}
                     {showComponents === 'Orders' && <AllOrder handleOrderDetailClick={handleOrderDetailClick}/>}
                 </main>

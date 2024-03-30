@@ -3,6 +3,7 @@ import { OrderResponse } from "../responses/OrderResponse";
 import { UserResponse } from "../responses/UserResponse";
 import { Request } from "./Request";
 import { OrderDTO } from "../dtos/orders/OrderDTO";
+import { ProductDTO } from "../dtos/products/ProductDTO";
 
 
 interface ResultOrder{
@@ -253,4 +254,91 @@ export async function deleteProduct(productId:number):Promise<string> {
     }
     
     return response.text();
+}
+
+export async function addProduct(productDTO:ProductDTO):Promise<any> {
+   try{
+    debugger
+    const url:string = `http://localhost:8080/api/v1/products`;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in Local Storage');
+    }
+
+    const response = await fetch(url,{
+        method:"POST",
+        headers:{
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({
+            name:productDTO.name,
+            price:productDTO.price,
+            des:productDTO.des,
+            category_id:productDTO.category_id,
+        })
+    })
+
+    return response.text();
+    
+   }
+   catch(error){
+    throw new Error(`${error}`);
+   }
+}
+
+export async function insertProductImages(productId:number,file:File):Promise<any> {
+    debugger
+   try{
+    const url:string = `http://localhost:8080/api/v1/products/uploads/${productId}`;
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in Local Storage');
+    }
+
+    const formData = new FormData();
+    formData.append("files",file);
+
+    const response = await fetch(url,{
+        method:"POST",
+        headers:{
+            'Authorization': `Bearer ${token}`,
+        },
+        body:formData
+    })
+
+    if(!response.ok){
+       console.log("has error");
+    }
+    return "add images success";
+   }
+   catch(error){
+    throw new Error(`${error}`);
+   }
+}
+
+export async function deleteProductImage(imageName:string):Promise<any> {
+    try{
+        const url:string = `http://localhost:8080/api/v1/products/delete/${imageName}`;
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Token not found in Local Storage');
+        }
+    
+        const response = await fetch(url,{
+            method:"DELETE",
+            headers:{
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+    
+        return response.text();
+    }
+    catch(error){
+        throw new Error(`${error}`);
+    }
+    
 }

@@ -6,7 +6,12 @@ import { getCategory } from "../../../../api/CategoryApi";
 import { Pagination } from "../../../utils/Pagination";
 import { deleteProduct } from "../../../../api/AdminApi";
 
-export const AllProduct = () => {
+interface AllProduct{
+    handleAddProduct:any
+    handleProductDetail:any;
+}
+
+export const AllProduct:React.FC<AllProduct> = (props) => {
     const [products,setProducts] = useState<Product[]>([]);
     const [category,setCategory] = useState<Category[]>([]);
     const [currentPage,setCurrentPage] = useState(1);
@@ -65,7 +70,7 @@ export const AllProduct = () => {
     return (
         <div className="container mt-5 mb-5">
         <div className="search-box d-flex align-items-center justify-content-center">
-            <button className="btn btn-outline-primary ml-2">ADD PRODUCT</button>
+            <button className="btn btn-outline-primary ml-2" onClick={() => props.handleAddProduct()}>ADD PRODUCT</button>
             <input type="text" className="form-control search-input" placeholder="Search..." style={{width:'300px'}} onChange={handleSearch} value={momentKeyword}/>
             
             <select className="form-control product-category" style={{width:'200px'}} onChange={handleCategoryChange}>
@@ -101,7 +106,7 @@ export const AllProduct = () => {
                                 <td>{product.price}</td>
                                 <td>{product.category_id}</td>
                                 <td><button className="btn btn-outline-danger" style={{fontSize:"13px"}} onClick={() => handleDelete(product.id)}>DELETE</button></td>
-                                <td><button className="btn btn-outline-success" style={{fontSize:"13px"}}>DETAIL</button></td>
+                                <td><button className="btn btn-outline-success" style={{fontSize:"13px"}} onClick={() => props.handleProductDetail(product.id)}>DETAIL</button></td>
                             </tr>
                         ))}
                     </tbody>

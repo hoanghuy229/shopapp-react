@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export function Footer(){
     return(
@@ -35,21 +36,19 @@ export function Footer(){
             <div className="container text-center text-md-start mt-5">
               <div className="row mt-3">
                 <div className="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-                  <h6 className="text-uppercase fw-bold mb-4">
-                    <i className="fas fa-gem me-3"></i>Company name
-                  </h6>
-                  <p>
-                    Here you can use rows and columns to organize your footer
-                    content. Lorem ipsum dolor sit amet, consectetur adipisicing
-                    elit.
-                  </p>
+                  <Link to={'/'} style={{textDecoration:"none",color:"white"}}>
+                    <h6 className="text-uppercase fw-bold mb-4">
+                      <i className="fas fa-gem me-3" ></i>Home Page
+                    </h6>
+                  </Link>
+                 
                 </div>
   
                 <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
                   <h6 className="text-uppercase fw-bold mb-4">Products</h6>
                   <p>
                     <a href="#!" className="text-reset text-decoration-none">
-                      Angular
+                      Post Man
                     </a>
                   </p>
                   <p>
@@ -59,12 +58,12 @@ export function Footer(){
                   </p>
                   <p>
                     <a href="#!" className="text-reset text-decoration-none">
-                      Vue
+                      Spring boot
                     </a>
                   </p>
                   <p>
                     <a href="#!" className="text-reset text-decoration-none">
-                      Laravel
+                      MySQL
                     </a>
                   </p>
                 </div>
@@ -100,7 +99,7 @@ export function Footer(){
                   </p>
                   <p>
                     <i className="fas fa-envelope me-3"></i>
-                    info@example.com
+                    hoanghuy220903@gmail.com
                   </p>
                   <p>
                     <i className="fas fa-phone me-3"></i> + 01 234 567 88
@@ -114,9 +113,9 @@ export function Footer(){
           </section>
   
           <div className="text-center p-4 text-white">
-            © 2021 Copyright:
-            <a className="text-reset fw-bold" href="https://mdbootstrap.com/">
-              MDBootstrap.com
+            © 2024 Copyright:
+            <a className="text-reset fw-bold" href="https://react.dev/">
+              SHOPAPP-REACT.com
             </a>
           </div>
         </footer>

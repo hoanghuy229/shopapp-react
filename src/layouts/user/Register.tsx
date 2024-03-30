@@ -23,7 +23,6 @@ export const Register = () => {
     const formattedDate = dateOfBirth ? dateOfBirth.toISOString().substr(0, 10) : '';
 
 
-    debugger
     const register = async (e:React.FormEvent) => {
         e.preventDefault();
 
@@ -33,19 +32,16 @@ export const Register = () => {
             setError("Số điện thoại không hợp lệ");
             return;
         }
-        debugger
         // Kiểm tra mật khẩu
         if (!checkPasswordExist(password)) {
             setError("Mật khẩu phải có ít nhất 3 ký tự.");
             return;
         }
-        debugger
         // Kiểm tra mật khẩu nhập lại
         if (!checkRePasswordExist(repassword)) {
             setError("Mật khẩu không khớp.");
             return;
         }
-        debugger
         // // Tiếp tục xử lý đăng ký nếu các điều kiện hợp lệ
         const registerDTO:RegisterDTO = {
             fullname:fullName,

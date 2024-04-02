@@ -10,8 +10,8 @@ export const Register = () => {
     const [repassword,setRePassword] = useState("");
     const [dateOfBirth,setDateOfBirth] = useState<Date | null>(null);
     const [address,setAdress] = useState("");
-    const [facebookAccount,setFaceBook] = useState(0);
-    const [google,setGoogle] = useState(0);
+    const [facebookAccount,setFaceBook] = useState("0");
+    const [google,setGoogle] = useState("0");
     const [role,setRole] = useState(2);
 
     const [error,setError] = useState("");

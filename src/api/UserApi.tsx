@@ -5,6 +5,7 @@ import { ResetPasswordDTO } from "../dtos/users/ResetPasswordDTO";
 import { UpdateUserDTO } from "../dtos/users/UpdateUserDTO";
 import { UserResponse } from "../responses/UserResponse";
 import { jwtDecode } from "jwt-decode";
+import { Request } from "./Request";
 
 export async function registerUser(registerDTO:RegisterDTO):Promise<string>{
     try{
@@ -56,6 +57,7 @@ export async function login(loginDTO:LoginDTO): Promise<any> {
 }
 
 export async function getUserDetail(token: string): Promise<any> {
+    
     const url: string = `http://localhost:8080/api/v1/users/details`;
 
     debugger
